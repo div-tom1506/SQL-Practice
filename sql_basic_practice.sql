@@ -14,7 +14,8 @@
 5. TCL (Transaction Control Language)
     [BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT]
 
--> Aggregate Functions: 
+Operators: 
+    >, >=, <, <=, =, <>, BETWEEN, LKE, IN
 
 */
 
@@ -88,7 +89,54 @@ SELECT *
 FROM employees;
 
 DELETE FROM employees
-WHERE empID = 5678
+WHERE empID = 5678;
+
+SELECT empId, firstName, Designation
+FROM employees;
+
+SELECT empId, firstName, Designation
+FROM employees
+WHERE Age = 27;
+
+SELECT Country, COUNT(*) AS employee_count
+FROM employees
+GROUP BY Country;
+
+SELECT DISTINCT Country
+FROM employees;
+
+SELECT Country, COUNT(*) AS employee_count
+FROM employees
+GROUP BY Country
+HAVING COUNT(*) >= 2; 
+
+SELECT *
+FROM employees
+ORDER BY Age DESC    -- [DESC | ASC]
+
+SELECT *
+FROM employees
+WHERE Age BETWEEN 23 and 27
+
+SELECT *
+FROM employees
+where firstName LIKE "D%"
+
+SELECT *
+FROM employees
+WHERE Age IN (23,27)
+
+SELECT COUNT(DISTINCT AGE)
+FROM employees
+
+SELECT *
+FROM employees
+ORDER BY firstName ASC, Age DESC
+
+SELECT *
+FROM employees
+ORDER BY firstName ASC, Age DESC
+LIMIT 5
 
 TRUNCATE TABLE employees; -- deletes only the table data, keeps structure as it is
 DROP TABLE IF EXISTS employees;  -- deletes the whole table with its data
