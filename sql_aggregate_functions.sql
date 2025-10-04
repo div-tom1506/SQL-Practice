@@ -1,7 +1,5 @@
 /*
     Aggregate Functions
-
-
 */
 
 USE sql_demo;
