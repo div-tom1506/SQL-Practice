@@ -32,7 +32,7 @@ SELECT customer_name, order_date, amount,
     ROW_NUMBER() OVER(PARTITION BY customer_name ORDER BY amount DESC) as order_rank
 FROM Orders;
 
--- Use Case: Find the latest or highest order per customer:
+-- Use Case: Find the highest order per customer:
 SELECT *
 FROM (
     SELECT *, ROW_NUMBER() OVER(PARTITION BY customer_name ORDER BY amount DESC) as rn
@@ -58,41 +58,71 @@ WHERE rank_position = 2;
 
 -- 3. DENSE_RANK()
 -- Similar to RANK() but does not skip ranks after ties.
-
 -- Use Case: Helpful in reports where rank continuity matters (no skipped ranks).
+SELECT customer_name, amount,
+    DENSE_RANK() OVER(ORDER BY amount DESC) AS dense_rank_position
+FROM Orders;
 
 
 -- 4. LAG()
 -- Accesses data from the previous row without using self-joins.
+SELECT customer_name, order_date, amount,
+    LAG(amount) OVER(PARTITION BY customer_name ORDER BY order_date) AS previous_order
+FROM Orders; 
 
 -- Use Case: Calculate difference between consecutive orders:
-
+SELECT customer_name, order_date, amount,
+    amount - LAG(amount) OVER(PARTITION BY customer_name ORDER BY order_date) AS order_diff
+FROM Orders;
 
 -- 5. LEAD()
 -- Gets the next row’s value.
-
 -- Use Case:Useful for predicting or comparing future order values or trends.
+SELECT customer_name, order_date, amount,
+    LEAD(amount) OVER(PARTITION BY customer_name ORDER BY order_date) AS next_order
+FROM Orders;
 
 
 -- 6. NTILE(n)
 -- Divides rows into n equal parts (buckets).
-
 -- Use Case: Split customers or transactions into percentiles or quartiles for analysis (e.g., top 33%, middle 33%, bottom 33%).
+SELECT 
+  order_id,
+  amount,
+  NTILE(3) OVER (ORDER BY amount DESC) AS bucket
+FROM Orders;
 
 
 -- 7. CUME_DIST()
 -- Shows the cumulative distribution (percentage of rows below the current one).
-
 -- Use Case: Used in statistical analysis — e.g., finding what percentile a value falls in.
+SELECT 
+  order_id,
+  amount,
+  CUME_DIST() OVER (ORDER BY amount) AS cumulative_distribution
+FROM Orders;
+
 
 
 -- 8. PERCENT_RANK()
 -- Calculates the relative rank (percentile) of a row.
-
 -- Use Case: Identify top X% of customers or transactions (e.g., top 10% spenders).
+SELECT 
+  order_id,
+  amount,
+  PERCENT_RANK() OVER (ORDER BY amount) AS per_rank
+FROM Orders;
+
 
 
 -- 9. FIRST_VALUE() and LAST_VALUE()
 -- Return the first or last value in a partition.
-
 -- Use Case: Track first and last order value per customer.
+SELECT 
+  customer_name,
+  order_date,
+  amount,
+  FIRST_VALUE(amount) OVER (PARTITION BY customer_name ORDER BY order_date) AS first_order,
+  LAST_VALUE(amount) OVER (PARTITION BY customer_name ORDER BY order_date 
+                           ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING) AS last_order
+FROM Orders;
