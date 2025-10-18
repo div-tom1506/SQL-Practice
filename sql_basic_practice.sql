@@ -15,7 +15,7 @@
     [BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT]
 
 Operators: 
-    >, >=, <, <=, =, <>, BETWEEN, LKE, IN
+    >, >=, <, <=, =, <>, BETWEEN, LIKE, IN
 
 */
 
